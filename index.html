@@ -8,8 +8,8 @@
     body {
       margin: 0;
       padding: 0;
-      background: #fff7e6 url('活動海報-(外框).jpg') no-repeat bottom right;
-      background-size: 300px;
+      background: #fff7e6 url('活動海報-(外框).jpg') no-repeat center center;
+      background-size: cover;
       font-family: 'Noto Sans TC', sans-serif;
       text-align: center;
       padding-top: 50px;
@@ -86,9 +86,9 @@
 
       let num;
       do {
-        const x = Math.floor(Math.random() * 10);
         const tail = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-        num = `1${x}${tail}`;
+        const secondDigit = Math.floor(Math.random() * 10);
+        num = `1${secondDigit}${tail}`;
       } while (drawn.has(num));
 
       drawn.add(num);
@@ -105,3 +105,4 @@
   </script>
 </body>
 </html>
+
