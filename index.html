@@ -1,107 +1,113 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>泡芙人抽獎</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #fff7e6 url('活動海報-(外框).jpg') no-repeat center center;
-      background-size: cover;
-      font-family: 'Noto Sans TC', sans-serif;
-      text-align: center;
-      padding-top: 50px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽獎動畫</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('素材01-.png');
+            background-size: contain; /* 確保背景覆蓋整個視窗 */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
 
-    h1 {
-      font-size: 3em;
-      color: #ff9900;
-      margin-bottom: 20px;
-    }
+        #number-display {
+            font-size: 120px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #F8B62D;
+            letter-spacing: 5px;
+        }
 
-    #winner {
-      font-size: 2.5em;
-      color: #d35400;
-      margin-top: 30px;
-      animation: pop 0.6s ease;
-    }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #F8B62D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transform: scale(1.5);
+            margin-top: 20px;
+        }
 
-    button {
-      font-size: 1.5em;
-      padding: 10px 30px;
-      background-color: #ffcc66;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 2px 4px 6px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-    }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
 
-    button:hover {
-      transform: scale(1.1);
-    }
+        .box {
+            transform: translateX(170px);
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
 
-    #log {
-      margin-top: 40px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-      font-size: 1.2em;
-      background: #fff3d1;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        /* 手機屏幕的樣式 */
+        @media (max-width: 600px) {
+            body{
+                background-size: cover;
+            }
+            #number-display {
+                font-size: 80px; /* 調整數字大小 */
+                margin-bottom: 15px; /* 調整間距 */
+            }
 
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-  </style>
+            button {
+                padding: 8px 16px; /* 調整按鈕內邊距 */
+                font-size: 14px; /* 調整字體大小 */
+                transform: scale(1); /* 調整按鈕大小 */
+                margin-top: 15px; /* 調整按鈕上邊距 */
+            }
+
+            .box {
+                transform: translateX(0); /* 移除水平方向的偏移 */
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>泡芙人抽獎</h1>
-  <button onclick="drawNumber()">抽出號碼！</button>
-  <div id="winner"></div>
-  <div id="log"></div>
+    <div class="box">
+        <div id="number-display">1X000</div>
+        <button id="start-button" onclick="startAnimation()">開始抽獎</button>
+    </div>
 
-  <audio id="drawSound" src="draw.mp3" preload="auto"></audio>
+    <script>
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
-  <script>
-    const drawn = new Set();
-    const total = 1000;
-    const logEl = document.getElementById('log');
+        function startAnimation() {
+            const display = document.getElementById('number-display');
+            const button = document.getElementById('start-button');
+            const prefix = '1X';  // Fixed prefix
+            
+            button.disabled = true;
 
-    function drawNumber() {
-      if (drawn.size >= total) {
-        document.getElementById('winner').innerText = '🎉 全部號碼都抽完了！';
-        return;
-      }
+            let interval = setInterval(() => {
+                display.innerText = prefix + getRandomInt(0, 999).toString().padStart(3, '0');
+            }, 100);
 
-      document.getElementById('drawSound').play();
-
-      let num;
-      do {
-        const tail = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-        const secondDigit = Math.floor(Math.random() * 10);
-        num = `1${secondDigit}${tail}`;
-      } while (drawn.has(num));
-
-      drawn.add(num);
-      const winnerEl = document.getElementById('winner');
-      winnerEl.style.animation = 'none';
-      void winnerEl.offsetWidth;
-      winnerEl.style.animation = null;
-      winnerEl.innerText = `🎉 中獎號碼：${num}`;
-
-      const entry = document.createElement('div');
-      entry.textContent = num;
-      logEl.prepend(entry);
-    }
+            setTimeout(() => {
+                clearInterval(interval);
+                let finalLastThreeDigits = getRandomInt(0, 999).toString().padStart(3, '0');
+                display.innerText = prefix + finalLastThreeDigits;
+                button.disabled = false;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
   </script>
 </body>
 </html>
