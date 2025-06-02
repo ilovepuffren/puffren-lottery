@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>泡芙人抽獎</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff7e6 url('素材01-.png') no-repeat bottom right;
+      background-size: 300px;
+      font-family: 'Noto Sans TC', sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #ff9900;
+      margin-bottom: 20px;
+    }
+
+    #winner {
+      font-size: 2.5em;
+      color: #d35400;
+      margin-top: 30px;
+      animation: pop 0.6s ease;
+    }
+
+    button {
+      font-size: 1.5em;
+      padding: 10px 30px;
+      background-color: #ffcc66;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 2px 4px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #log {
+      margin-top: 40px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      font-size: 1.2em;
+      background: #fff3d1;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <h1>泡芙人抽獎</h1>
+  <button onclick="drawNumber()">抽出號碼！</button>
+  <div id="winner"></div>
+  <div id="log"></div>
+
+  <audio id="drawSound" src="draw.mp3" preload="auto"></audio>
+
+  <script>
+    const drawn = new Set();
+    const total = 1000;
+    const logEl = document.getElementById('log');
+
+    function drawNumber() {
+      if (drawn.size >= total) {
+        document.getElementById('winner').innerText = '🎉 全部號碼都抽完了！';
+        return;
+      }
+
+      document.getElementById('drawSound').play();
+
+      let num;
+      do {
+        const x = Math.floor(Math.random() * 10);
+        const tail = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        num = `1${x}${tail}`;
+      } while (drawn.has(num));
+
+      drawn.add(num);
+      const winnerEl = document.getElementById('winner');
+      winnerEl.style.animation = 'none';
+      void winnerEl.offsetWidth;
+      winnerEl.style.animation = null;
+      winnerEl.innerText = `🎉 中獎號碼：${num}`;
+
+      const entry = document.createElement('div');
+      entry.textContent = num;
+      logEl.prepend(entry);
+    }
+  </script>
+</body>
+</html>
